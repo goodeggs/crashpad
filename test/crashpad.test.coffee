@@ -4,25 +4,68 @@ Boom = require 'boom'
 namespacedRequest = require 'namespaced-request'
 {expect} = require 'chai'
 
-port = process.env['PORT'] or 291084
-
-describe 'crashpad', ->
-
+withServer = (createServer) ->
   beforeEach (done) ->
-    app = express()
-    app.get '/error', (req, res, next) ->
-      next Boom.unauthorized 'get off my lawn!', 'sample',
-        ttl: 0
-        cache: null
-        foo: 'bar'
+    app = createServer(express())
     app.use crashpad()
     @server = app.listen port, done
     @request = namespacedRequest "http://localhost:#{port}"
 
   afterEach (done) ->
-    @server.close done
+    @server.close (done)
 
-  describe 'unauthorized request', ->
+port = process.env['PORT'] or 291084
+
+describe 'crashpad', ->
+
+  describe 'generic (non-boom) errors', ->
+
+    withServer (app) ->
+      app.get '/error', (req, res, next) ->
+        next new Error('what happened!?')
+
+    beforeEach (done) ->
+      @request.get 'error', (err, @response) =>
+        done()
+
+    it 'retursn with a 500 status code', ->
+      expect(@response.statusCode).to.equal 500
+
+    it "returns with a json-formatted body", ->
+      expect(@response.body).to.deep.equal
+        statusCode: 500
+        error: 'Internal Server Error'
+        message: 'An internal server error occurred'
+
+  describe 'generic (non-boom) error with a status property', ->
+
+    withServer (app) ->
+      app.get '/error', (req, res, next) ->
+        error = new Error('you messed up, yo')
+        error.status = 400
+        next error
+
+    beforeEach (done) ->
+      @request.get 'error', (err, @response) =>
+        done()
+
+    it "returns with the supplied status", ->
+      expect(@response.statusCode).to.equal 400
+
+    it "returns with a json-formatted body", ->
+      expect(@response.body).to.deep.equal
+        statusCode: 400
+        error: 'Bad Request'
+        message: 'you messed up, yo'
+
+  describe 'unauthorized requests', ->
+
+    withServer (app) ->
+      app.get '/error', (req, res, next) ->
+        next Boom.unauthorized 'get off my lawn!', 'sample',
+          ttl: 0
+          cache: null
+          foo: 'bar'
 
     beforeEach (done) ->
       @request.get 'error', (err, @response) =>
