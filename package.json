@@ -1,0 +1,31 @@
+{
+  "name": "crashpad",
+  "version": "1.0.0",
+  "description": "Express middleware for Boom errors",
+  "author": "Good Eggs <open-source@goodeggs.com>",
+  "contributors": [
+    "Max Edmands <me@maxedmands.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "express boom"
+  ],
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/goodeggs/crashpad.git"
+  },
+  "homepage": "https://github.com/goodeggs/crashpad",
+  "bugs": "https://github.com/goodeggs/crashpad/issues",
+  "dependencies": {},
+  "devDependencies": {
+    "coffee-script": ">=1.7.x",
+    "mocha": "~1.x.x"
+  },
+  "scripts": {
+    "compile": "coffee --bare --compile --output lib/ src/",
+    "prepublish": "npm run compile",
+    "pretest": "npm run compile",
+    "test": "mocha"
+  }
+}
