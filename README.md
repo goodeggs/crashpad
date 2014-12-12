@@ -1,6 +1,6 @@
 # Crashpad
 
-Express middleware for Boom errors
+[Express](https://www.npmjs.com/package/express) middleware for [Boom](https://www.npmjs.com/package/boom) errors
 
 [![NPM version](http://img.shields.io/npm/v/crashpad.svg?style=flat-square)](https://www.npmjs.org/package/crashpad)
 [![Build Status](http://img.shields.io/travis/goodeggs/crashpad.svg?style=flat-square)](https://travis-ci.org/goodeggs/crashpad)
