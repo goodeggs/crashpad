@@ -17,10 +17,15 @@
   },
   "homepage": "https://github.com/goodeggs/crashpad",
   "bugs": "https://github.com/goodeggs/crashpad/issues",
-  "dependencies": {},
+  "dependencies": {
+    "boom": "^2.6.1"
+  },
   "devDependencies": {
     "coffee-script": ">=1.7.x",
-    "mocha": "~1.x.x"
+    "mocha": "~1.x.x",
+    "chai": "^1.10.0",
+    "express": "^4.10.5",
+    "namespaced-request": "^1.3.1"
   },
   "scripts": {
     "compile": "coffee --bare --compile --output lib/ src/",
