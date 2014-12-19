@@ -41,7 +41,9 @@ describe 'crashpad', ->
 
     withServer (app) ->
       app.get '/error', (req, res, next) ->
-        error = new Error('you messed up, yo')
+        error = new Error()
+        error.name = 'CustomError'
+        error.message = 'you messed up, yo'
         error.status = 400
         next error
 
@@ -52,11 +54,11 @@ describe 'crashpad', ->
     it "returns with the supplied status", ->
       expect(@response.statusCode).to.equal 400
 
-    it "returns with a json-formatted body", ->
+      it "returns with a json-formatted body", ->
       expect(@response.body).to.deep.equal
         statusCode: 400
         error: 'Bad Request'
-        message: 'you messed up, yo'
+        message: 'you messed up, yo: you messed up, yo'
 
   describe 'unauthorized requests', ->
 
