@@ -86,7 +86,7 @@ describe 'crashpad', ->
       expect(@response.headers).to.have.property 'www-authenticate', 'sample ttl="0", cache="", foo="bar", error="get off my lawn!"'
 
 
-  describe 'non-Error errors', ->
+  describe 'non-Error string errors', ->
     withServer (app) ->
       app.get '/error', (req, res, next) ->
         next 'poorly implemented error'
