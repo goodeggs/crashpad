@@ -25,10 +25,10 @@ describe 'crashpad', ->
         next new Error('what happened!?')
 
     beforeEach (done) ->
-      @request.get 'error', (err, @response) =>
+      @request.get '/error', (err, @response) =>
         done()
 
-    it 'retursn with a 500 status code', ->
+    it 'returns with a 500 status code', ->
       expect(@response.statusCode).to.equal 500
 
     it "returns with a json-formatted body", ->
@@ -48,7 +48,7 @@ describe 'crashpad', ->
         next error
 
     beforeEach (done) ->
-      @request.get 'error', (err, @response) =>
+      @request.get '/error', (err, @response) =>
         done()
 
     it "returns with the supplied status", ->
@@ -70,7 +70,7 @@ describe 'crashpad', ->
           foo: 'bar'
 
     beforeEach (done) ->
-      @request.get 'error', (err, @response) =>
+      @request.get '/error', (err, @response) =>
         done()
 
     it "returns with the status code", ->
@@ -84,3 +84,22 @@ describe 'crashpad', ->
 
     it "returns with the correct headers", ->
       expect(@response.headers).to.have.property 'www-authenticate', 'sample ttl="0", cache="", foo="bar", error="get off my lawn!"'
+
+
+  describe 'non-Error errors', ->
+    withServer (app) ->
+      app.get '/error', (req, res, next) ->
+        next 'poorly implemented error'
+
+    beforeEach (done) ->
+      @request.get '/error', (err, @response) =>
+        done()
+
+    it 'returns with a 500 status code', ->
+      expect(@response.statusCode).to.equal 500
+
+    it "returns with a json-formatted body", ->
+      expect(@response.body).to.deep.equal
+        statusCode: 500
+        error: 'Internal Server Error'
+        message: 'An internal server error occurred'
