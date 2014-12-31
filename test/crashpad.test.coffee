@@ -58,7 +58,7 @@ describe 'crashpad', ->
       expect(@response.body).to.deep.equal
         statusCode: 400
         error: 'Bad Request'
-        message: 'you messed up, yo: you messed up, yo'
+        message: 'you messed up, yo'
 
   describe 'unauthorized requests', ->
 
