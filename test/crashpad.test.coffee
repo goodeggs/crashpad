@@ -98,3 +98,25 @@ describe 'crashpad', ->
         statusCode: 500
         error: 'Internal Server Error'
         message: 'An internal server error occurred'
+
+  describe 'Boom errors with custom payload', ->
+    withServer (app) ->
+      app.get '/error', (req, res, next) ->
+        err = Boom.badRequest 'invalid cucumber', {skinToughness: 'high'}
+        err.output.payload.data = err.data
+        next(err)
+
+    beforeEach (done) ->
+      @request.get '/error', (err, @response) =>
+        done()
+
+    it "returns status code", ->
+      expect(@response.statusCode).to.equal 400
+
+    it "returns with custom payload intact", ->
+      expect(@response.body).to.deep.equal
+        statusCode: 400
+        error: 'Bad Request'
+        message: 'invalid cucumber'
+        data:
+          skinToughness: 'high'
