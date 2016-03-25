@@ -54,7 +54,7 @@ describe 'crashpad', ->
     it "returns with the supplied status", ->
       expect(@response.statusCode).to.equal 400
 
-      it "returns with a json-formatted body", ->
+    it "returns with a json-formatted body", ->
       expect(@response.body).to.deep.equal
         statusCode: 400
         error: 'Bad Request'
