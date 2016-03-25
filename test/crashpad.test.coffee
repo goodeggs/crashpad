@@ -77,7 +77,7 @@ describe 'crashpad', ->
       expect(@response.statusCode).to.equal 401
 
     it "returns with a json-formatted body", ->
-      expect(@response.body).to.deep.equal
+      expect(@response.body).to.deep.contain
         statusCode: 401
         error: 'Unauthorized'
         message: 'get off my lawn!'
