@@ -1,6 +1,6 @@
 {
   "name": "crashpad",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Express middleware for Boom errors",
   "author": "Good Eggs <open-source@goodeggs.com>",
   "contributors": [
