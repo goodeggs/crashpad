@@ -17,9 +17,7 @@ withServer = (createServer) ->
 port = process.env['PORT'] or 291084
 
 describe 'crashpad', ->
-
   describe 'generic (non-boom) errors', ->
-
     withServer (app) ->
       app.get '/error', (req, res, next) ->
         next new Error('what happened!?')
@@ -38,7 +36,6 @@ describe 'crashpad', ->
         message: 'An internal server error occurred'
 
   describe 'generic (non-boom) error with a status property', ->
-
     withServer (app) ->
       app.get '/error', (req, res, next) ->
         error = new Error()
@@ -61,7 +58,6 @@ describe 'crashpad', ->
         message: 'you messed up, yo'
 
   describe 'unauthorized requests', ->
-
     withServer (app) ->
       app.get '/error', (req, res, next) ->
         next Boom.unauthorized 'get off my lawn!', 'sample',
@@ -84,7 +80,6 @@ describe 'crashpad', ->
 
     it "returns with the correct headers", ->
       expect(@response.headers).to.have.property 'www-authenticate', 'sample ttl="0", cache="", foo="bar", error="get off my lawn!"'
-
 
   describe 'non-Error string errors', ->
     withServer (app) ->
