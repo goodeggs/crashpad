@@ -14,7 +14,7 @@ withServer = (createServer) ->
   afterEach (done) ->
     @server.close (done)
 
-port = process.env['PORT'] or 291084
+port = process.env['PORT'] or 29108
 
 describe 'crashpad', ->
   describe 'generic (non-boom) errors', ->
