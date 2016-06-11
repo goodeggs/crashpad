@@ -8,4 +8,5 @@ module.exports = ->
     err.reformat()
     res.set err.output.headers
     res.status err.output.statusCode
-    res.json err.output.payload
+    res.body = err.output.payload
+    res.json res.body
