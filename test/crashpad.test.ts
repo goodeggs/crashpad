@@ -1,19 +1,25 @@
-const crashpad = require('..');
-const express = require('express');
-const Boom = require('boom');
-const namespacedRequest = require('namespaced-request');
-const {expect} = require('chai');
+import crashpad, {BoomableError} from '..';
+import {Server} from 'http';
+import express, {Request as ExpressRequest, Response as ExpressResponse} from 'express';
+import {Response} from 'request';
+import Boom from '@hapi/boom';
+import requestjs from 'request';
+import {expect} from 'chai';
+import {beforeEach, afterEach, describe, it} from 'mocha';
 
-let app, request, response, server;
+let app, request: any, response: Response, server: Server;
 
-const withServer = function(createServer) {
-  beforeEach(function(done) {
+const withServer = function(createServer: Function) {
+  beforeEach(function(done: any) {
     app = createServer(express());
     app.use(crashpad());
     server = app.listen(port, done);
-    request = namespacedRequest(`http://localhost:${port}`);
+    request = requestjs.defaults({
+      baseUrl: `http://localhost:${port}`,
+      json:true,
+    });
   });
-  afterEach(function(done) {
+  afterEach(function(done: any){
     server.close(done);
   });
 };
@@ -22,14 +28,14 @@ const port = process.env['PORT'] || 29108;
 
 describe('crashpad', function() {
   describe('generic (non-boom) errors', function() {
-    withServer(function(app) {
-      app.get('/error', function(req, res, next) {
+    withServer(function(app: any) {
+      app.get('/error', function(req: ExpressRequest, res: ExpressResponse, next?: any) {
         next(new Error('what happened!?'));
       });
       return app;
     });
-    beforeEach(function(done) {
-      request.get('/error', function(err, _response){
+    beforeEach(function(done: any) {
+      request.get('/error', function(err: any, _response: Response){
         response = _response;
         done(err);
       });
@@ -45,19 +51,19 @@ describe('crashpad', function() {
       });
     });
   });
-  describe('generic (non-boom) error with a status property', function() {
-    withServer(function(app) {
-      app.get('/error', function(req, res, next) {
-        const error = new Error();
+  describe('generic (non-boom) error with a statusCode property', function() {
+    withServer(function(app: any) {
+      app.get('/error', function(req: ExpressRequest, res: ExpressResponse, next: any) {
+        const error = new BoomableError();
         error.name = 'CustomError';
         error.message = 'you messed up, yo';
-        error.status = 400;
+        error.statusCode = 400;
         next(error);
       });
       return app;
     });
-    beforeEach(function(done) {
-      request.get('/error', function(err, _response){
+    beforeEach(function(done: any) {
+      request.get('/error', function(err: Error, _response: Response){
         response = _response;
         done(err);
       });
@@ -74,8 +80,8 @@ describe('crashpad', function() {
     });
   });
   describe('unauthorized requests', function() {
-    withServer(function(app) {
-      app.get('/error', function(req, res, next) {
+    withServer(function(app: any) {
+      app.get('/error', function(req: ExpressRequest, res: ExpressResponse, next: any) {
         next(Boom.unauthorized('get off my lawn!', 'sample', {
           ttl: 0,
           cache: null,
@@ -84,8 +90,8 @@ describe('crashpad', function() {
       });
       return app;
     });
-    beforeEach(function(done) {
-      request.get('/error', function(err, _response){
+    beforeEach(function(done: any) {
+      request.get('/error', function(err: Error, _response: Response){
         response = _response;
         done(err);
       });
@@ -105,14 +111,14 @@ describe('crashpad', function() {
     });
   });
   describe('non-Error string errors', function() {
-    withServer(function(app) {
-      app.get('/error', function(req, res, next) {
+    withServer(function(app: any) {
+      app.get('/error', function(req: ExpressRequest, res: ExpressResponse, next: any) {
         next('poorly implemented error');
       });
       return app;
     });
-    beforeEach(function(done) {
-      request.get('/error', function(err, _response){
+    beforeEach(function(done: any) {
+      request.get('/error', function(err: Error, _response: Response){
         response = _response;
         done(err);
       });
@@ -129,8 +135,8 @@ describe('crashpad', function() {
     });
   });
   describe('Boom errors with custom payload', function() {
-    withServer(function(app) {
-      app.get('/error', function(req, res, next) {
+    withServer(function(app: any) {
+      app.get('/error', function(req: ExpressRequest, res: ExpressResponse, next: any) {
         const err = Boom.badRequest('invalid cucumber', {
           skinToughness: 'high'
         });
@@ -139,8 +145,8 @@ describe('crashpad', function() {
       });
       return app;
     });
-    beforeEach(function(done){
-      request.get('/error', function(err, _response){
+    beforeEach(function(done: any){
+      request.get('/error', function(err: Error, _response: Response){
         response = _response;
         done(err);
       });
