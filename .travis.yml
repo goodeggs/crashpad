@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 language: node_js
 node_js:
@@ -17,32 +17,31 @@ before_install:
 
 install:
   - yarn install --frozen-lockfile
-  - yarn run build
-  - yarn link
 
 jobs:
   include:
     # Install dependencies and save them to the Travis cache
     - stage: "Prepare cache"
       # Don't run `script`, just install dependencies
-      before_script: true
-      script: true
+      before_script: skip
+      script: skip
     # Run tests
     - stage: "Test"
       name: "Lint"
-      script: yarn run lint
+      script:
+      # Lint this package using this package. How meta.
+      - yarn link
+      - yarn link crashpad
+      - yarn run lint
     - name: "Unit Tests"
-      script: yarn run test
-      # TODO(ndhoule): Enable when this repository is made public.
-      # after_success:
-      #   - bash <(curl -s https://codecov.io/bash)
+      script: yarn run test:unit
     - stage: "Publish to registry"
       if: tag =~ ^v
-      script: echo "Publishing to npm registry..."
+      script: skip
       deploy:
         provider: npm
         email: open-source@goodeggs.com
-        api_key: $NPM_AUTH
         skip_cleanup: true
         on:
+          tags: true
           all_branches: true
