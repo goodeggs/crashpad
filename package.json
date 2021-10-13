@@ -48,6 +48,7 @@
     "build:src": "babel --extensions .ts,.js,.jsx,.tsx --source-maps --ignore 'src/*.test.ts' --out-dir dist/ src/",
     "build:types": "tsc --project tsconfig.declarations.json",
     "clean": "rm -rf dist",
+    "lint": "eslint --ext js,jsx,ts,tsx --ignore-path .gitignore .",
     "test": "mocha --require @babel/polyfill --require .register.ts --extension ts,js,jsx,tsx"
   },
   "devDependencies": {
@@ -57,6 +58,7 @@
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-typescript": "^7.15.0",
     "@babel/register": "^7.15.3",
+    "@goodeggs/toolkit": "^4.0.4",
     "@goodeggs/tsconfig": "^1.0.0",
     "@types/chai": "^4.2.22",
     "@types/express": "^4.17.13",

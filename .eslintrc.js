@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parserOptions: {
-    project: './tsconfig.json',
+    project: "./tsconfig.json",
   },
-  extends: ['plugin:goodeggs/recommended', 'plugin:goodeggs/typescript'],
+  extends: ["plugin:goodeggs/recommended", "plugin:goodeggs/typescript"],
 };
