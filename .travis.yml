@@ -33,8 +33,6 @@ jobs:
       - yarn link
       - yarn link crashpad
       - yarn run lint
-    - name: "Unit Tests"
-      script: yarn run test:unit
     - stage: "Publish to registry"
       if: tag =~ ^v
       script: skip
