@@ -1,19 +1,43 @@
 import { Server } from "http";
 import express, {
+  Application,
   Request as ExpressRequest,
   Response as ExpressResponse,
 } from "express";
-import requestjs, { Response } from "request";
+import requestjs, {
+  Request as RequestRequest,
+  RequestAPI,
+  CoreOptions,
+  RequiredUriUrl,
+  Response,
+} from "request";
 import Boom from "@hapi/boom";
 import { expect } from "chai";
 import { beforeEach, afterEach, describe, it } from "mocha";
 
 import crashpad, { BoomableError } from "..";
 
-let app, request: any, response: Response, server: Server;
+// a requestjs object which hits our express app
+type RequestjsRequest = RequestAPI<RequestRequest, CoreOptions, RequiredUriUrl>;
 
-const withServer = function (createServer: Function) {
-  beforeEach(function (done: any) {
+// a func which takes an express app, adds routes/middleware, and returns it
+type CreateServerFunc = (app: Application) => Application;
+
+// mocha test done func
+type DoneFunc = (err: Error | undefined) => void;
+
+// express middleware next func
+type NextFunc = (err: Error | undefined) => void;
+
+let app: Application;
+let request: RequestjsRequest;
+let response: Response;
+let server: Server;
+
+const port = process.env.PORT ?? 29108;
+
+const withServer = function (createServer: CreateServerFunc) {
+  beforeEach(function (done: DoneFunc) {
     app = createServer(express());
     app.use(crashpad());
     server = app.listen(port, done);
@@ -22,26 +46,24 @@ const withServer = function (createServer: Function) {
       json: true,
     });
   });
-  afterEach(function (done: any) {
+  afterEach(function (done: DoneFunc) {
     server.close(done);
   });
 };
 
-const port = process.env.PORT || 29108;
-
 describe("crashpad", function () {
   describe("generic (non-boom) errors", function () {
-    withServer(function (app: any) {
-      app.get(
+    withServer(function (innerApp: Application) {
+      innerApp.get(
         "/error",
-        function (req: ExpressRequest, res: ExpressResponse, next?: any) {
+        function (req: ExpressRequest, res: ExpressResponse, next?: NextFunc) {
           next(new Error("what happened!?"));
         }
       );
-      return app;
+      return innerApp;
     });
-    beforeEach(function (done: any) {
-      request.get("/error", function (err: any, _response: Response) {
+    beforeEach(function (done: DoneFunc) {
+      request.get("/error", function (err: Error, _response: Response) {
         response = _response;
         done(err);
       });
@@ -58,10 +80,10 @@ describe("crashpad", function () {
     });
   });
   describe("generic (non-boom) error with a statusCode property", function () {
-    withServer(function (app: any) {
-      app.get(
+    withServer(function (innerApp: Application) {
+      innerApp.get(
         "/error",
-        function (req: ExpressRequest, res: ExpressResponse, next: any) {
+        function (req: ExpressRequest, res: ExpressResponse, next: NextFunc) {
           const error = new BoomableError();
           error.name = "CustomError";
           error.message = "you messed up, yo";
@@ -69,9 +91,9 @@ describe("crashpad", function () {
           next(error);
         }
       );
-      return app;
+      return innerApp;
     });
-    beforeEach(function (done: any) {
+    beforeEach(function (done: DoneFunc) {
       request.get("/error", function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -89,10 +111,10 @@ describe("crashpad", function () {
     });
   });
   describe("unauthorized requests", function () {
-    withServer(function (app: any) {
-      app.get(
+    withServer(function (innerApp: Application) {
+      innerApp.get(
         "/error",
-        function (req: ExpressRequest, res: ExpressResponse, next: any) {
+        function (req: ExpressRequest, res: ExpressResponse, next: NextFunc) {
           next(
             Boom.unauthorized("get off my lawn!", "sample", {
               ttl: 0,
@@ -102,9 +124,9 @@ describe("crashpad", function () {
           );
         }
       );
-      return app;
+      return innerApp;
     });
-    beforeEach(function (done: any) {
+    beforeEach(function (done: DoneFunc) {
       request.get("/error", function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -128,16 +150,20 @@ describe("crashpad", function () {
     });
   });
   describe("non-Error string errors", function () {
-    withServer(function (app: any) {
-      app.get(
+    withServer(function (innerApp: Application) {
+      innerApp.get(
         "/error",
-        function (req: ExpressRequest, res: ExpressResponse, next: any) {
+        function (
+          req: ExpressRequest,
+          res: ExpressResponse,
+          next: (invalidErr: string) => void
+        ) {
           next("poorly implemented error");
         }
       );
-      return app;
+      return innerApp;
     });
-    beforeEach(function (done: any) {
+    beforeEach(function (done: DoneFunc) {
       request.get("/error", function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -155,10 +181,10 @@ describe("crashpad", function () {
     });
   });
   describe("Boom errors with custom payload", function () {
-    withServer(function (app: any) {
-      app.get(
+    withServer(function (innerApp: Application) {
+      innerApp.get(
         "/error",
-        function (req: ExpressRequest, res: ExpressResponse, next: any) {
+        function (req: ExpressRequest, res: ExpressResponse, next: NextFunc) {
           const err = Boom.badRequest("invalid cucumber", {
             skinToughness: "high",
           });
@@ -166,9 +192,9 @@ describe("crashpad", function () {
           next(err);
         }
       );
-      return app;
+      return innerApp;
     });
-    beforeEach(function (done: any) {
+    beforeEach(function (done: DoneFunc) {
       request.get("/error", function (err: Error, _response: Response) {
         response = _response;
         done(err);

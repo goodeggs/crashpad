@@ -5,12 +5,19 @@ export class BoomableError extends Error {
   public statusCode = 500;
 }
 
-export default function () {
+type ExpressErrorMiddleware = (
+  err: Boom | BoomableError | Error,
+  req: Request,
+  res: Response,
+  next: (err: Error) => void
+) => void;
+
+export default function (): ExpressErrorMiddleware {
   return (
     err: Boom | BoomableError | Error,
     _req: Request,
     res: Response,
-    _next: (err: Error) => any
+    _next: (err: Error) => void
   ) => {
     if (!(err instanceof Error)) {
       err = new Error(err);
@@ -21,7 +28,7 @@ export default function () {
     } else {
       let statusCode = 500;
       if (err instanceof BoomableError) {
-        statusCode = err.statusCode || 500;
+        statusCode = err.statusCode ?? 500;
       }
       boom = new Boom(err, { statusCode });
     }
