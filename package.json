@@ -49,6 +49,7 @@
     "build:types": "tsc --project tsconfig.declarations.json",
     "clean": "rm -rf dist",
     "lint": "eslint --ext js,jsx,ts,tsx --ignore-path .gitignore .",
+    "prepublish": "yarn run build",
     "test": "mocha --require @babel/polyfill --require .register.ts --extension ts,js,jsx,tsx"
   },
   "devDependencies": {
