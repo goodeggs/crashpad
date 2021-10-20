@@ -29,10 +29,11 @@ jobs:
     - stage: "Test"
       name: "Lint"
       script:
-      # Lint this package using this package. How meta.
-      - yarn link
-      - yarn link crashpad
       - yarn run lint
+    - stage: "Test"
+      name: "Test"
+      script:
+      - yarn run test
     - stage: "Publish to registry"
       if: tag =~ ^v
       script: skip
