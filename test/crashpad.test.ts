@@ -49,6 +49,7 @@ const withServer = function (createServer: CreateServerFunc) {
       json: true,
     });
   });
+
   // eslint-disable-next-line mocha/no-top-level-hooks
   afterEach(function (done: DoneFunc) {
     server.close(done);
@@ -66,15 +67,18 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
+
     beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
       });
     });
+
     it('returns with a 500 status code', function () {
       expect(response.statusCode).to.equal(500);
     });
+
     it('returns with a json-formatted body', function () {
       expect(response.body).to.deep.equal({
         statusCode: 500,
@@ -98,15 +102,18 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
+
     beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
       });
     });
+
     it('returns with the supplied status', function () {
       expect(response.statusCode).to.equal(400);
     });
+
     it('returns with a json-formatted body', function () {
       expect(response.body).to.deep.equal({
         statusCode: 400,
@@ -132,15 +139,18 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
+
     beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
       });
     });
+
     it('returns with the status code', function () {
       expect(response.statusCode).to.equal(401);
     });
+
     it('returns with a json-formatted body', function () {
       expect(response.body).to.deep.contain({
         statusCode: 401,
@@ -148,6 +158,7 @@ describe('crashpad', function () {
         message: 'get off my lawn!',
       });
     });
+
     it('returns with the correct headers', function () {
       expect(response.headers).to.have.property(
         'www-authenticate',
@@ -166,15 +177,18 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
+
     beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
       });
     });
+
     it('returns with a 500 status code', function () {
       expect(response.statusCode).to.equal(500);
     });
+
     it('returns with a json-formatted body', function () {
       expect(response.body).to.deep.equal({
         statusCode: 500,
@@ -198,15 +212,18 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
+
     beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
       });
     });
+
     it('returns status code', function () {
       expect(response.statusCode).to.equal(400);
     });
+
     it('returns with custom payload intact', function () {
       expect(response.body).to.deep.equal({
         statusCode: 400,
