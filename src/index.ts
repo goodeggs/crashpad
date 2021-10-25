@@ -1,41 +1,28 @@
-import {Boom} from '@hapi/boom';
-import {Request, Response} from 'express';
+import {Boom, isBoom} from '@hapi/boom';
+import {ErrorRequestHandler} from 'express';
 
-export class BoomableError extends Error {
-  public statusCode = 500;
+export interface BoomableError extends Error {
+  statusCode: number;
 }
 
-type ExpressErrorMiddleware = (
-  err: Boom | BoomableError | Error,
-  req: Request,
-  res: Response,
-  next: (err: Error) => void,
-) => void;
-
-export default function (): ExpressErrorMiddleware {
-  return (
-    err: Boom | BoomableError | Error,
-    _req: Request,
-    res: Response,
-    _next: (err: Error) => void,
-  ) => {
+export default function (): ErrorRequestHandler {
+  return (err, _req, res, _next) => {
     if (!(err instanceof Error)) {
       err = new Error(err);
     }
     let boom: Boom;
-    if (err instanceof Boom) {
+    if (isBoom(err)) {
       boom = err;
     } else {
-      let statusCode = 500;
-      if (err instanceof BoomableError) {
-        statusCode = err.statusCode ?? 500;
-      }
+      const statusCode = err.statusCode ?? err.status;
       boom = new Boom(err, {statusCode});
     }
     boom.reformat();
     res.set(boom.output.headers);
     res.status(boom.output.statusCode);
-    const body = boom.output.payload;
-    res.json(body);
+    // @ts-ignore need to save to .body
+    res.body = boom.output.payload;
+    // @ts-ignore need to save to .body
+    res.json(res.body);
   };
 }

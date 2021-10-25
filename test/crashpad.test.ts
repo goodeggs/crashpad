@@ -66,7 +66,7 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
-    beforeEach(function (done: DoneFunc) {
+    beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -83,6 +83,7 @@ describe('crashpad', function () {
       });
     });
   });
+
   describe('generic (non-boom) error with a statusCode property', function () {
     withServer(function (innerApp: Application) {
       innerApp.get(
@@ -97,7 +98,7 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
-    beforeEach(function (done: DoneFunc) {
+    beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -114,6 +115,7 @@ describe('crashpad', function () {
       });
     });
   });
+
   describe('unauthorized requests', function () {
     withServer(function (innerApp: Application) {
       innerApp.get(
@@ -130,7 +132,7 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
-    beforeEach(function (done: DoneFunc) {
+    beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -153,6 +155,7 @@ describe('crashpad', function () {
       );
     });
   });
+
   describe('non-Error string errors', function () {
     withServer(function (innerApp: Application) {
       innerApp.get(
@@ -163,7 +166,7 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
-    beforeEach(function (done: DoneFunc) {
+    beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);
@@ -180,6 +183,7 @@ describe('crashpad', function () {
       });
     });
   });
+
   describe('Boom errors with custom payload', function () {
     withServer(function (innerApp: Application) {
       innerApp.get(
@@ -194,7 +198,7 @@ describe('crashpad', function () {
       );
       return innerApp;
     });
-    beforeEach(function (done: DoneFunc) {
+    beforeEach(function (done) {
       request.get('/error', function (err: Error, _response: Response) {
         response = _response;
         done(err);

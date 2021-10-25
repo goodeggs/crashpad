@@ -28,12 +28,11 @@ jobs:
     # Run tests
     - stage: "Test"
       name: "Lint"
-      script:
-      - yarn run lint
-    - stage: "Test"
-      name: "Test"
-      script:
-      - yarn run test
+      script: yarn run lint
+    - name: "Type Checking"
+      script: yarn run typecheck
+    - name: "Unit Tests"
+      script: yarn run test:unit
     - stage: "Publish to registry"
       if: tag =~ ^v
       script: skip
