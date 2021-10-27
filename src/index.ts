@@ -1,10 +1,6 @@
 import {Boom, isBoom} from '@hapi/boom';
 import {ErrorRequestHandler} from 'express';
 
-export interface BoomableError extends Error {
-  statusCode: number;
-}
-
 export default function (): ErrorRequestHandler {
   return (err, _req, res, _next) => {
     if (!(err instanceof Error)) {

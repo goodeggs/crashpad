@@ -15,7 +15,7 @@ import Boom from '@hapi/boom';
 import {expect} from 'chai';
 import {beforeEach, afterEach, describe, it} from 'mocha';
 
-import crashpad, {BoomableError} from '..';
+import crashpad from '../src';
 
 // a requestjs object which hits our express app
 type RequestjsRequest = RequestAPI<RequestRequest, CoreOptions, RequiredUriUrl>;
@@ -35,6 +35,10 @@ let response: Response;
 let server: Server;
 
 const port = process.env.PORT ?? 29108;
+
+class BoomableError extends Error {
+  statusCode = 500;
+}
 
 const withServer = function (createServer: CreateServerFunc) {
   // eslint-disable-next-line mocha/no-top-level-hooks
