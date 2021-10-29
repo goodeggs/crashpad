@@ -16,9 +16,9 @@ export default function (): ErrorRequestHandler {
     boom.reformat();
     res.set(boom.output.headers);
     res.status(boom.output.statusCode);
+    const body = boom.output.payload;
     // @ts-ignore need to save to .body
-    res.body = boom.output.payload;
-    // @ts-ignore need to save to .body
-    res.json(res.body);
+    res.body = body;
+    res.json(body);
   };
 }

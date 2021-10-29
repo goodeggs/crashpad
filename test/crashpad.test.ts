@@ -23,9 +23,6 @@ type RequestjsRequest = RequestAPI<RequestRequest, CoreOptions, RequiredUriUrl>;
 // a func which takes an express app, adds routes/middleware, and returns it
 type CreateServerFunc = (app: Application) => Application;
 
-// mocha test done func
-type DoneFunc = (err: Error | undefined) => void;
-
 // express middleware next func
 type NextFunc = (err: Error | undefined) => void;
 
@@ -42,7 +39,7 @@ class BoomableError extends Error {
 
 const withServer = function (createServer: CreateServerFunc) {
   // eslint-disable-next-line mocha/no-top-level-hooks
-  beforeEach(function (done: DoneFunc) {
+  beforeEach(function (done) {
     app = createServer(express());
     app.use(crashpad());
     server = app.listen(port, () => {
@@ -55,7 +52,7 @@ const withServer = function (createServer: CreateServerFunc) {
   });
 
   // eslint-disable-next-line mocha/no-top-level-hooks
-  afterEach(function (done: DoneFunc) {
+  afterEach(function (done) {
     server.close(done);
   });
 };
