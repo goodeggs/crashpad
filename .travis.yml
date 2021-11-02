@@ -40,7 +40,7 @@ jobs:
         provider: npm
         email: open-source@goodeggs.com
         api_token:
-          secure: "ZsR2kJqwSpNSmT2SwM55MMx4Hnmwk6eslpjhcTdUiRN5VF5zTU4YFz1REjMWaInkjKQCgvGgzRckn5gDOV11bYZB1vFCh8wSgIwrH6Jbo6j1uSe9Xe2m00HJwtbbEZOn4QqiepdSASg4LpBDXv8g+WgmE9/NoCNshvdwUwNTmF8="
+          secure: "CnTzlw3eI2Kw5dqjSrLDP1th6RTP/+V/QE0KTqO87LOn1DnLmUA6KiR5b2EWWSdJSNjeF7mmAeZTQW8ISIaCpqvqJBj7NOGpm5Ti2XQIzclNf/zqtCXqumR1lbpGAXsnsAfJlhLjr8WU5S6CSBqfB8kw5qBfP0zKSUAFluXToFI="
         skip_cleanup: true
         on:
           tags: true
