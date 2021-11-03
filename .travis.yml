@@ -1,3 +1,47 @@
+dist: bionic
+
 language: node_js
 node_js:
-  - '0.10'
+  - 14.16.0
+
+cache:
+  yarn: true
+
+env:
+  global:
+    - PATH="$HOME/.yarn/bin:$PATH"
+    - YARN_VERSION="1.9.4"
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version "${YARN_VERSION}"
+
+install:
+  - yarn install --frozen-lockfile
+
+jobs:
+  include:
+    # Install dependencies and save them to the Travis cache
+    - stage: "Prepare cache"
+      # Don't run `script`, just install dependencies
+      before_script: skip
+      script: skip
+    # Run tests
+    - stage: "Test"
+      name: "Lint"
+      script: yarn run lint
+    - name: "Type Checking"
+      script: yarn run typecheck
+    - name: "Unit Tests"
+      script: yarn run test:unit
+    - stage: "Publish to registry"
+      if: tag =~ ^v
+      script: skip
+      deploy:
+        provider: npm
+        email: open-source@goodeggs.com
+        api_token:
+          secure: "CnTzlw3eI2Kw5dqjSrLDP1th6RTP/+V/QE0KTqO87LOn1DnLmUA6KiR5b2EWWSdJSNjeF7mmAeZTQW8ISIaCpqvqJBj7NOGpm5Ti2XQIzclNf/zqtCXqumR1lbpGAXsnsAfJlhLjr8WU5S6CSBqfB8kw5qBfP0zKSUAFluXToFI="
+        skip_cleanup: true
+        on:
+          tags: true
+          all_branches: true
