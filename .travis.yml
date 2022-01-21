@@ -10,13 +10,12 @@ cache:
 env:
   global:
     - PATH="$HOME/.yarn/bin:$PATH"
-    - YARN_VERSION="1.9.4"
 
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version "${YARN_VERSION}"
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s
 
 install:
-  - yarn install --frozen-lockfile
+  - yarn install --immutable
 
 jobs:
   include:
