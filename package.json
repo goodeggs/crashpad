@@ -55,5 +55,5 @@
     "request": "^2.88.2",
     "typescript": "^4.4.3"
   },
-  "packageManager": "yarn@3.1.1"
+  "packageManager": "yarn@3.2.0-rc.11"
 }

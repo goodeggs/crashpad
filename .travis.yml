@@ -17,6 +17,7 @@ before_install:
   - yarn --version
 
 install:
+  - yarn --version
   - yarn install --immutable
   - yarn --version
 
