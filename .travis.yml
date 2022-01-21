@@ -12,7 +12,7 @@ env:
     - PATH="$HOME/.yarn/bin:$PATH"
 
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version "$(jq )"
 
 install:
   - yarn install --immutable
