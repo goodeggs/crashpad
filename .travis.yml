@@ -12,12 +12,11 @@ env:
     - PATH="$HOME/.yarn/bin:$PATH"
 
 before_install:
-  - echo 333333 && echo $PATH
-  - yarn --version
+  - yarn set version 3.1.1
 
 install:
   - yarn --version
-  - yarn install # --immutable --check-cache --inline-builds
+  - yarn install
   - yarn --version
 
 jobs:
