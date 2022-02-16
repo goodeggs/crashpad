@@ -7,12 +7,12 @@ node_js:
 cache:
   yarn: true
 
-env:
-  global:
-    - PATH="$HOME/.yarn/bin:$PATH"
-
-before_install:
-  - yarn set version 3.1.1
+#env:
+#  global:
+#    - PATH="$HOME/.yarn/bin:$PATH"
+#
+#before_install:
+#  - yarn set version 3.1.1
 
 install:
   - yarn --version

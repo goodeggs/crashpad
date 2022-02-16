@@ -5,6 +5,7 @@ lib/
 yarn-error.log
 .eslintcache
 .idea/
+.vscode/
 
 .yarn/*
 !.yarn/patches
